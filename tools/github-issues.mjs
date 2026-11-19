@@ -18,7 +18,6 @@ if (!args.includes('--apply')) {
         repository: repo || '未指定，apply时必须是本人training-开头的独立仓库',
         issues: 20,
         milestones: phases,
-        hours: 88,
         labels: [
           'training',
           'checkpoint',
@@ -26,7 +25,7 @@ if (!args.includes('--apply')) {
         ],
         sample: tasks
           .slice(0, 2)
-          .map((t) => ({ title: `[${t.id}] ${t.title}`, branch: t.branch })),
+          .map((t) => ({ title: t.title, branch: t.branch })),
       },
       null,
       2,
@@ -101,13 +100,16 @@ for (const t of tasks) {
   const marker = `<!-- engineering20:${t.id} -->`;
   if (
     existing.some(
-      (i) => i.body?.includes(marker) || i.title.startsWith(`[${t.id}]`),
+      (i) =>
+        i.body?.includes(marker) ||
+        i.title === t.title ||
+        i.title.startsWith(`[${t.id}]`),
     )
   ) {
     console.log('已存在，跳过' + t.id);
     continue;
   }
-  const text = `${marker}\n## 目标\n${t.objective}\n\n任务书：course/20项任务/${t.file}\n分支：${t.branch}\n预计${t.hours}小时\n\n## 验收\n${t.acceptance.map((a) => '- [ ] ' + a).join('\n')}\n\n独立编码先提交，Agent综合实现后审查；交付证据见learning/${t.id}/。${t.checkpoint ? '阶段需带教签收。' : '个人训练普通题自查交付。'}`;
+  const text = `${marker}\n## ${t.topic}\n\n${t.objective}\n\n任务书位于 course/20项任务/${t.file}。\n任务分支为 ${t.branch}。\n\n## 验收要求\n\n${t.acceptance.map((a) => '- [ ] ' + a).join('\n')}\n\n完成独立编码并单独提交。验证记录放在 learning/${t.id}/。${t.checkpoint ? '本项安排现场验收。' : ''}`;
   const file = path.join(directory, t.id + '.md');
   fs.writeFileSync(file, text, 'utf8');
   const argv = [
@@ -116,7 +118,7 @@ for (const t of tasks) {
     '--repo',
     repo,
     '--title',
-    `[${t.id}] ${t.title}`,
+    t.title,
     '--body-file',
     file,
     '--assignee',

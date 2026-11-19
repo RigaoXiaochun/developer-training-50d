@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       task:
-        description: 'Q01—Q20，留空仅基础烟测'
+        description: '任务编号 Q01–Q20。留空时执行基础检查。'
         required: false
 permissions:
   contents: read
@@ -20,15 +20,29 @@ jobs:
         with:
           node-version: '24.14.0'
           cache: npm
-      - run: npm ci
-      - run: npm run check:base && npm test && npm run typecheck && npm run build
       - id: lesson
-        name: Resolve task
+        name: Verify task branch
         env:
           REQUESTED: ${{ inputs.task }}
           BRANCH: ${{ github.head_ref || github.ref_name }}
+          FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork }}
         run: |
-          node --input-type=module -e 'import fs from "node:fs";const q=process.env.REQUESTED||process.env.BRANCH.match(/^(?:feat|fix|refactor)\/(q\d{2})-/)?.[1]?.toUpperCase()||"smoke";if(q!=="smoke"&&!/^Q(0[1-9]|1\d|20)$/.test(q))throw Error("Invalid task");fs.appendFileSync(process.env.GITHUB_OUTPUT,"task="+q+"\n");'
+          node --input-type=module <<'JS'
+          import { readFileSync, appendFileSync } from 'node:fs';
+          const { BRANCH, REQUESTED, FORK_PR, GITHUB_OUTPUT } = process.env;
+          const branchTask = BRANCH.match(/^(?:feat|fix|refactor)\/(q\d{2})-/)?.[1]?.toUpperCase();
+          const task = REQUESTED || branchTask || 'smoke';
+          const { tasks } = JSON.parse(readFileSync('course/tasks.json', 'utf8'));
+          if (task !== 'smoke' && !tasks.some(({ id }) => id === task)) {
+            throw new Error('任务编号应为 Q01 至 Q20。');
+          }
+          if (FORK_PR === 'true' && !tasks.some((item) => item.id === task && item.branch === BRANCH)) {
+            throw new Error('提交培训 PR 时，请使用任务书指定的分支名。');
+          }
+          appendFileSync(GITHUB_OUTPUT, `task=${task}\n`);
+          JS
+      - run: npm ci
+      - run: npm run check:base && npm test && npm run typecheck && npm run build
       - name: Core and evidence
         if: steps.lesson.outputs.task != 'smoke'
         env:

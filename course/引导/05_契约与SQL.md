@@ -1,10 +1,10 @@
-# 契约、关系模型与参数化SQL
+# 接口约定与 SQLite 迁移
 
-先读现有v1返回，再形成字段、空值、状态、错误与权限表。TS类型只帮助开发，不会替代服务端运行时校验。独立函数契约和HTTP契约分层，辅助函数的boolean或错误数组需要服务层转换成HTTP响应。
+先从 v1 的真实请求与返回中确认字段、空值、权限、状态和错误。运行时校验在服务端执行。独立函数的结果由服务层转换成 HTTP 响应。
 
-Q07从JSON迁移到规范化SQLite，不能把整份JSON塞一列然后继续全量读写。Actor、Ticket、Event有主键、外键、NOT NULL和CHECK；version用于并发控制，archived保留记录。迁移版本成功后记录，重复启动不重灌，失败回滚不清库。
+迁移采用 Actor、Ticket 和 Event 关系表及版本表。外键、`NOT NULL` 与 `CHECK` 用于限制数据。版本字段用于并发控制，归档保留原记录。迁移成功后记录版本，失败时回滚。
 
-先在内存数据库做小实验，再写仓储：
+可以先在内存数据库验证参数绑定。
 
 ```js
 import { DatabaseSync } from 'node:sqlite';
@@ -16,8 +16,4 @@ console.log(result);
 db.close();
 ```
 
-这是通用入门示例，不是本题权限函数答案。正式仓储把输入作为参数绑定，字段与排序只能由白名单生成。NULL判断用IS NULL；JOIN保留范围要弄清INNER／LEFT差别。索引要按WHERE与ORDER BY和选择性论证，EXPLAIN QUERY PLAN核对，不能每列都加索引。
-
-Node24.14的SQLite模块仍在开发中且同步执行，训练用于学SQL／事务和真实文件持久化；不宣称多实例生产能力。Node直接执行可擦除TS语法不会类型检查，仍要npm run typecheck。
-
-参考：[Node24.14 SQLite](https://nodejs.org/download/release/v24.14.0/docs/api/sqlite.html)、[Node TypeScript](https://nodejs.org/docs/latest-v24.x/api/typescript.html)。
+查询输入使用参数绑定。动态字段名和排序方向从白名单选取。使用 `IS NULL` 检查空值，结合 `EXPLAIN QUERY PLAN` 核对索引和排序。训练库使用单进程同步 SQLite 驱动。

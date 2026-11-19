@@ -37,7 +37,7 @@ export function baseCheck() {
   if (tasks.length !== 20 || new Set(tasks.map((t) => t.id)).size !== 20)
     throw Error('固定任务必须20项');
   console.log(
-    `基础检查通过：Node24.14+、UTF-8、20项任务（${count}个文本文件）；不代表业务验收。`,
+    `基础检查通过。已核对 Node.js 版本、20 项任务及 ${count} 个文本文件的 UTF-8 编码。`,
   );
 }
 if (
