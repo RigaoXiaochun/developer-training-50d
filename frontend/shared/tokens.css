@@ -1,0 +1,7 @@
+/* Q03按course/规范/UI与交互.md补齐变量；此处仅为起始可读样式。 */
+:root {
+  --color-text: #17212b;
+  --color-surface: #ffffff;
+  color: var(--color-text);
+  background: var(--color-surface);
+}

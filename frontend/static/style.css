@@ -1,0 +1,12 @@
+/* 基础入口样式；Q03起业务工作台在Vue中实现并使用共享变量。 */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+header,
+main {
+  padding: 24px;
+}

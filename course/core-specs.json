@@ -1,0 +1,3515 @@
+[
+  {
+    "id": "Q01",
+    "name": "normalizeDraft",
+    "signature": "(draft: Record<string, unknown>): { value: { title: string; description: string; category: string } | null; errors: { field: string; code: string }[] }",
+    "rules": [
+      "只读取title、description、category；不修改输入。title与description为字符串，trim后分别1—60、1—1000 Unicode码点。",
+      "category仅support／billing／other，严格匹配不隐式改值。错误按title、description、category固定顺序，code统一INVALID。",
+      "任一错误value=null，合法errors=[]并返回规范三字段，不携带未知字段。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "title": " 标题 ",
+            "description": " 内容 ",
+            "category": "support",
+            "admin": true
+          }
+        ],
+        "result": {
+          "value": {
+            "title": "标题",
+            "description": "内容",
+            "category": "support"
+          },
+          "errors": []
+        }
+      },
+      {
+        "args": [
+          {
+            "title": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+            "description": "文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文",
+            "category": "other"
+          }
+        ],
+        "result": {
+          "value": {
+            "title": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+            "description": "文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文文",
+            "category": "other"
+          },
+          "errors": []
+        }
+      },
+      {
+        "args": [
+          {
+            "title": " ",
+            "description": 3,
+            "category": "x"
+          }
+        ],
+        "result": {
+          "value": null,
+          "errors": [
+            {
+              "field": "title",
+              "code": "INVALID"
+            },
+            {
+              "field": "description",
+              "code": "INVALID"
+            },
+            {
+              "field": "category",
+              "code": "INVALID"
+            }
+          ]
+        }
+      },
+      {
+        "args": [
+          {
+            "title": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+            "description": "内容",
+            "category": "billing"
+          }
+        ],
+        "result": {
+          "value": null,
+          "errors": [
+            {
+              "field": "title",
+              "code": "INVALID"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q02",
+    "name": "parseBranch",
+    "signature": "(name: string): { kind: string; task: string; slug: string } | null",
+    "rules": [
+      "格式为kind/qNN-slug，kind仅feat／fix／refactor，NN范围01—20，例如feat/q01-requirements。",
+      "slug由小写字母开头的小写字母／数字词段，以单个短横线分隔；不能连续横线或尾横线。",
+      "合法返回kind、转大写的QNN和slug，非法返回null，不trim输入。"
+    ],
+    "cases": [
+      {
+        "args": [
+          "feat/q01-requirements"
+        ],
+        "result": {
+          "kind": "feat",
+          "task": "Q01",
+          "slug": "requirements"
+        }
+      },
+      {
+        "args": [
+          "fix/q20-api-v2"
+        ],
+        "result": {
+          "kind": "fix",
+          "task": "Q20",
+          "slug": "api-v2"
+        }
+      },
+      {
+        "args": [
+          "feat/q21-something"
+        ],
+        "result": null
+      },
+      {
+        "args": [
+          "feat/q03-bad--name"
+        ],
+        "result": null
+      },
+      {
+        "args": [
+          " main "
+        ],
+        "result": null
+      },
+      {
+        "args": [
+          "refactor/q10-api-state"
+        ],
+        "result": {
+          "kind": "refactor",
+          "task": "Q10",
+          "slug": "api-state"
+        }
+      },
+      {
+        "args": [
+          "feat/q01-2bad"
+        ],
+        "result": null
+      },
+      {
+        "args": [
+          "feat/q00-start"
+        ],
+        "result": null
+      }
+    ]
+  },
+  {
+    "id": "Q03",
+    "name": "controlState",
+    "signature": "(input: { disabled: boolean; busy: boolean; invalid: boolean }): { disabled: boolean; ariaInvalid: string; label: string }",
+    "rules": [
+      "busy或disabled任一true则disabled=true。ariaInvalid严格为字符串true或false。",
+      "busy=true时label=处理中，否则保存。不能把invalid误当禁用理由，错误仍需允许修正。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "disabled": false,
+            "busy": false,
+            "invalid": false
+          }
+        ],
+        "result": {
+          "disabled": false,
+          "ariaInvalid": "false",
+          "label": "保存"
+        }
+      },
+      {
+        "args": [
+          {
+            "disabled": false,
+            "busy": true,
+            "invalid": true
+          }
+        ],
+        "result": {
+          "disabled": true,
+          "ariaInvalid": "true",
+          "label": "处理中"
+        }
+      },
+      {
+        "args": [
+          {
+            "disabled": false,
+            "busy": false,
+            "invalid": true
+          }
+        ],
+        "result": {
+          "disabled": false,
+          "ariaInvalid": "true",
+          "label": "保存"
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q04",
+    "name": "toCard",
+    "signature": "(ticket: Ticket): { id: string; title: string; fullTitle: string; statusLabel: string }",
+    "rules": [
+      "保留原title为fullTitle；title≤22码点原样，否则取前21码点加单个…，合计22。",
+      "状态open=待处理、in_progress=处理中、resolved=已解决，未知=未知状态。id原样；不修改输入。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          }
+        ],
+        "result": {
+          "id": "TCK-0001",
+          "title": "示例",
+          "fullTitle": "示例",
+          "statusLabel": "待处理"
+        }
+      },
+      {
+        "args": [
+          {
+            "id": "TCK-0001",
+            "title": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+            "status": "unknown",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          }
+        ],
+        "result": {
+          "id": "TCK-0001",
+          "title": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀…",
+          "fullTitle": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+          "statusLabel": "未知状态"
+        }
+      },
+      {
+        "args": [
+          {
+            "id": "TCK-0001",
+            "title": "字字字字字字字字字字字字字字字字字字字字字字",
+            "status": "resolved",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          }
+        ],
+        "result": {
+          "id": "TCK-0001",
+          "title": "字字字字字字字字字字字字字字字字字字字字字字",
+          "fullTitle": "字字字字字字字字字字字字字字字字字字字字字字",
+          "statusLabel": "已解决"
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q05",
+    "name": "toggleSelection",
+    "signature": "(ids: string[], clicked: string, limit: number): { ids: string[]; reason: string | null }",
+    "rules": [
+      "输入ids为无重复有效id，limit为正整数。点击已有id则移除，保持其余顺序，即使已满也能取消。",
+      "未满则追加，满时不追加并reason=LIMIT。其他reason=null，任何分支返回新数组，不改输入。"
+    ],
+    "cases": [
+      {
+        "args": [
+          [
+            "a",
+            "b"
+          ],
+          "b",
+          2
+        ],
+        "result": {
+          "ids": [
+            "a"
+          ],
+          "reason": null
+        }
+      },
+      {
+        "args": [
+          [
+            "a"
+          ],
+          "b",
+          2
+        ],
+        "result": {
+          "ids": [
+            "a",
+            "b"
+          ],
+          "reason": null
+        }
+      },
+      {
+        "args": [
+          [
+            "a",
+            "b"
+          ],
+          "c",
+          2
+        ],
+        "result": {
+          "ids": [
+            "a",
+            "b"
+          ],
+          "reason": "LIMIT"
+        }
+      },
+      {
+        "args": [
+          [],
+          "a",
+          100
+        ],
+        "result": {
+          "ids": [
+            "a"
+          ],
+          "reason": null
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q06",
+    "name": "parseListQuery",
+    "signature": "(query: Record<string, string | undefined>): { q: string; status: string; page: number; pageSize: number }",
+    "rules": [
+      "只支持q、status、page、pageSize；未知键抛status400/code=UNKNOWN_QUERY。",
+      "q缺省空字符串，trim、最长120 UTF-16单元；status缺省或空为all，否则仅all/open/in_progress/resolved，非法状态抛400 INVALID_STATUS。",
+      "page缺省1，纯十进制数字且1—100000；pageSize缺省5，仅5/10/20。显式空页码非法，非法分页／超长q抛400 INVALID_QUERY。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {}
+        ],
+        "result": {
+          "q": "",
+          "status": "all",
+          "page": 1,
+          "pageSize": 5
+        }
+      },
+      {
+        "args": [
+          {
+            "q": " a ",
+            "status": "open",
+            "page": "2",
+            "pageSize": "10"
+          }
+        ],
+        "result": {
+          "q": "a",
+          "status": "open",
+          "page": 2,
+          "pageSize": 10
+        }
+      },
+      {
+        "args": [
+          {
+            "page": "0"
+          }
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_QUERY"
+        }
+      },
+      {
+        "args": [
+          {
+            "pageSize": "7"
+          }
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_QUERY"
+        }
+      },
+      {
+        "args": [
+          {
+            "status": "bad"
+          }
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_STATUS"
+        }
+      },
+      {
+        "args": [
+          {
+            "priority": "high"
+          }
+        ],
+        "throws": {
+          "status": 400,
+          "code": "UNKNOWN_QUERY"
+        }
+      },
+      {
+        "args": [
+          {
+            "page": "2.0"
+          }
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_QUERY"
+        }
+      },
+      {
+        "args": [
+          {
+            "q": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_QUERY"
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q07",
+    "name": "visibilityWhere",
+    "signature": "(actor: Actor): { clause: string; params: (string | number)[] }",
+    "rules": [
+      "返回可用于SELECT id FROM tickets WHERE <clause>的参数化SQL片段，字段名为archived、owner_id、assignee_id；不能使用未定义alias。",
+      "所有角色先archived=0；manager看全部有效，user仅owner_id=actor.id，staff仅assignee_id=actor.id，未知角色无结果。",
+      "actor.id必须通过?绑定，不能把id拼进clause。测试将真实执行SQL，包括带引号id，不要求SQL空格逐字一致。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "id": "user-01",
+            "role": "user"
+          }
+        ],
+        "sqlIds": [
+          "a"
+        ]
+      },
+      {
+        "args": [
+          {
+            "id": "staff-01",
+            "role": "staff"
+          }
+        ],
+        "sqlIds": [
+          "a",
+          "b"
+        ]
+      },
+      {
+        "args": [
+          {
+            "id": "manager-01",
+            "role": "manager"
+          }
+        ],
+        "sqlIds": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      {
+        "args": [
+          {
+            "id": "user-01",
+            "role": "unknown"
+          }
+        ],
+        "sqlIds": []
+      },
+      {
+        "args": [
+          {
+            "id": "x' OR 1=1 --",
+            "role": "user"
+          }
+        ],
+        "sqlIds": []
+      }
+    ]
+  },
+  {
+    "id": "Q08",
+    "name": "canUpdate",
+    "signature": "(actor: Actor, ticket: Ticket, patch: Record<string, unknown>): boolean",
+    "rules": [
+      "归档或不可见false，patch必须有等于当前version的正整数version及至少一个业务字段。",
+      "user仅本人open，业务字段只能title/description/category；staff仅本人分配，字段只能status，允许open→in_progress/resolved、in_progress→resolved。",
+      "manager可见全部有效，业务字段仅status/assigneeId；status若出现需三种合法值。其他未知角色、字段或空修改false。",
+      "本函数只判断范围、字段和状态；文本内容与assignee存在性由服务端独立校验，不要凭空在此放宽权限。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "id": "user-01",
+            "role": "user"
+          },
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "title": "新"
+          }
+        ],
+        "result": true
+      },
+      {
+        "args": [
+          {
+            "id": "user-02",
+            "role": "user"
+          },
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "title": "新"
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "user-01",
+            "role": "user"
+          },
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "status": "resolved"
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "staff-01",
+            "role": "staff"
+          },
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "status": "in_progress"
+          }
+        ],
+        "result": true
+      },
+      {
+        "args": [
+          {
+            "id": "staff-01",
+            "role": "staff"
+          },
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "resolved",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "status": "open"
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "manager-01",
+            "role": "manager"
+          },
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 0,
+            "status": "open"
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "manager-01",
+            "role": "manager"
+          },
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": true
+          },
+          {
+            "version": 1,
+            "assigneeId": null
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "manager-01",
+            "role": "manager"
+          },
+          {
+            "id": "a",
+            "title": "A",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "status": "open"
+          }
+        ],
+        "result": true
+      },
+      {
+        "args": [
+          {
+            "id": "manager-01",
+            "role": "manager"
+          },
+          {
+            "id": "a",
+            "title": "A",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "assigneeId": null
+          }
+        ],
+        "result": true
+      },
+      {
+        "args": [
+          {
+            "id": "user-01",
+            "role": "unknown"
+          },
+          {
+            "id": "a",
+            "title": "A",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "title": "B"
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "staff-02",
+            "role": "staff"
+          },
+          {
+            "id": "a",
+            "title": "A",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "status": "resolved"
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "user-01",
+            "role": "user"
+          },
+          {
+            "id": "a",
+            "title": "A",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1
+          }
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          {
+            "id": "manager-01",
+            "role": "manager"
+          },
+          {
+            "id": "a",
+            "title": "A",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "version": 1,
+            "admin": true
+          }
+        ],
+        "result": false
+      }
+    ]
+  },
+  {
+    "id": "Q09",
+    "name": "mergeVersions",
+    "signature": "(current: Ticket[], incoming: Ticket[]): Ticket[]",
+    "rules": [
+      "两数组内部id均唯一。保留current的id顺序，新id按incoming出现顺序追加。",
+      "同id仅incoming.version更高时替换；相同或较低版本保留current。返回新数组，不改记录和输入数组。",
+      "这只是视图合并工具，不能用它绕过服务端版本保护。"
+    ],
+    "cases": [
+      {
+        "args": [
+          [
+            {
+              "id": "TCK-0001",
+              "title": "示例",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ],
+          [
+            {
+              "id": "TCK-0001",
+              "title": "新",
+              "status": "open",
+              "version": 2,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ]
+        ],
+        "result": [
+          {
+            "id": "TCK-0001",
+            "title": "新",
+            "status": "open",
+            "version": 2,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          }
+        ]
+      },
+      {
+        "args": [
+          [
+            {
+              "id": "TCK-0001",
+              "title": "示例",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ],
+          [
+            {
+              "id": "TCK-0001",
+              "title": "旧",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ]
+        ],
+        "result": [
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          }
+        ]
+      },
+      {
+        "args": [
+          [
+            {
+              "id": "TCK-0001",
+              "title": "示例",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ],
+          [
+            {
+              "id": "b",
+              "title": "示例",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            },
+            {
+              "id": "c",
+              "title": "示例",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ]
+        ],
+        "result": [
+          {
+            "id": "TCK-0001",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "id": "b",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          },
+          {
+            "id": "c",
+            "title": "示例",
+            "status": "open",
+            "version": 1,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          }
+        ]
+      },
+      {
+        "args": [
+          [
+            {
+              "id": "a",
+              "title": "A",
+              "status": "open",
+              "version": 2,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ],
+          [
+            {
+              "id": "a",
+              "title": "A",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ]
+        ],
+        "result": [
+          {
+            "id": "a",
+            "title": "A",
+            "status": "open",
+            "version": 2,
+            "createdAt": "2026-01-01T00:00:00Z",
+            "ownerId": "user-01",
+            "assigneeId": "staff-01",
+            "archived": false
+          }
+        ]
+      },
+      {
+        "args": [
+          [],
+          []
+        ],
+        "result": []
+      }
+    ]
+  },
+  {
+    "id": "Q10",
+    "name": "classifyFailure",
+    "signature": "(status: number | null, code: string): string",
+    "rules": [
+      "status=null视为网络不可用，返回unavailable。400→validation，401→identity，403→permission，404→not_found，409→conflict，429→rate_limit，500—599→unavailable，其余unknown。",
+      "code保留在调用者的错误对象中，本函数不靠任意message猜错误类别，也不改变输入。"
+    ],
+    "cases": [
+      {
+        "args": [
+          400,
+          "VALIDATION_ERROR"
+        ],
+        "result": "validation"
+      },
+      {
+        "args": [
+          401,
+          "X"
+        ],
+        "result": "identity"
+      },
+      {
+        "args": [
+          409,
+          "VERSION_CONFLICT"
+        ],
+        "result": "conflict"
+      },
+      {
+        "args": [
+          503,
+          "X"
+        ],
+        "result": "unavailable"
+      },
+      {
+        "args": [
+          null,
+          "NETWORK"
+        ],
+        "result": "unavailable"
+      },
+      {
+        "args": [
+          429,
+          "X"
+        ],
+        "result": "rate_limit"
+      },
+      {
+        "args": [
+          418,
+          "X"
+        ],
+        "result": "unknown"
+      }
+    ]
+  },
+  {
+    "id": "Q11",
+    "name": "canRetry",
+    "signature": "(method: string, status: number | null, retriesUsed: number): boolean",
+    "rules": [
+      "仅GET（不区分大小写）在null网络失败或502／503／504时可重试。",
+      "retriesUsed为已用重试次数，0／1可再试，2及以上不可；非法负数、非整数不可。",
+      "POST/PATCH/DELETE本通用函数一律不可重试，429不由它自动处理；不实现定时或真实请求。"
+    ],
+    "cases": [
+      {
+        "args": [
+          "GET",
+          503,
+          0
+        ],
+        "result": true
+      },
+      {
+        "args": [
+          "get",
+          null,
+          1
+        ],
+        "result": true
+      },
+      {
+        "args": [
+          "GET",
+          503,
+          2
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          "POST",
+          503,
+          0
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          "GET",
+          429,
+          0
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          "GET",
+          503,
+          -1
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          "GET",
+          500,
+          0
+        ],
+        "result": false
+      },
+      {
+        "args": [
+          "PATCH",
+          null,
+          0
+        ],
+        "result": false
+      }
+    ]
+  },
+  {
+    "id": "Q12",
+    "name": "checkBulkVersions",
+    "signature": "(tickets: { id: string; version: number }[], commands: { id: string; version: number }[]): { validIds: string[]; conflicts: string[]; missing: string[] }",
+    "rules": [
+      "commands 1—100项，空抛400 INVALID_BULK，超100抛400 BULK_LIMIT，重复id抛400 DUPLICATE_ID；这些检查在分类之前。",
+      "tickets为已按权限过滤的当前记录，id唯一。按commands顺序分别分类：不存在missing，version不同conflicts，相同validIds。",
+      "不修改输入，不进行写入。服务端若任何缺失／冲突必须整体拒绝，不能用validIds偷偷部分提交。"
+    ],
+    "cases": [
+      {
+        "args": [
+          [
+            {
+              "id": "a",
+              "version": 2
+            },
+            {
+              "id": "b",
+              "version": 1
+            }
+          ],
+          [
+            {
+              "id": "a",
+              "version": 1
+            },
+            {
+              "id": "b",
+              "version": 1
+            },
+            {
+              "id": "c",
+              "version": 1
+            }
+          ]
+        ],
+        "result": {
+          "validIds": [
+            "b"
+          ],
+          "conflicts": [
+            "a"
+          ],
+          "missing": [
+            "c"
+          ]
+        }
+      },
+      {
+        "args": [
+          [],
+          []
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_BULK"
+        }
+      },
+      {
+        "args": [
+          [],
+          [
+            {
+              "id": "a",
+              "version": 1
+            },
+            {
+              "id": "a",
+              "version": 1
+            }
+          ]
+        ],
+        "throws": {
+          "status": 400,
+          "code": "DUPLICATE_ID"
+        }
+      },
+      {
+        "args": [
+          [],
+          [
+            {
+              "id": "0",
+              "version": 1
+            },
+            {
+              "id": "1",
+              "version": 1
+            },
+            {
+              "id": "2",
+              "version": 1
+            },
+            {
+              "id": "3",
+              "version": 1
+            },
+            {
+              "id": "4",
+              "version": 1
+            },
+            {
+              "id": "5",
+              "version": 1
+            },
+            {
+              "id": "6",
+              "version": 1
+            },
+            {
+              "id": "7",
+              "version": 1
+            },
+            {
+              "id": "8",
+              "version": 1
+            },
+            {
+              "id": "9",
+              "version": 1
+            },
+            {
+              "id": "10",
+              "version": 1
+            },
+            {
+              "id": "11",
+              "version": 1
+            },
+            {
+              "id": "12",
+              "version": 1
+            },
+            {
+              "id": "13",
+              "version": 1
+            },
+            {
+              "id": "14",
+              "version": 1
+            },
+            {
+              "id": "15",
+              "version": 1
+            },
+            {
+              "id": "16",
+              "version": 1
+            },
+            {
+              "id": "17",
+              "version": 1
+            },
+            {
+              "id": "18",
+              "version": 1
+            },
+            {
+              "id": "19",
+              "version": 1
+            },
+            {
+              "id": "20",
+              "version": 1
+            },
+            {
+              "id": "21",
+              "version": 1
+            },
+            {
+              "id": "22",
+              "version": 1
+            },
+            {
+              "id": "23",
+              "version": 1
+            },
+            {
+              "id": "24",
+              "version": 1
+            },
+            {
+              "id": "25",
+              "version": 1
+            },
+            {
+              "id": "26",
+              "version": 1
+            },
+            {
+              "id": "27",
+              "version": 1
+            },
+            {
+              "id": "28",
+              "version": 1
+            },
+            {
+              "id": "29",
+              "version": 1
+            },
+            {
+              "id": "30",
+              "version": 1
+            },
+            {
+              "id": "31",
+              "version": 1
+            },
+            {
+              "id": "32",
+              "version": 1
+            },
+            {
+              "id": "33",
+              "version": 1
+            },
+            {
+              "id": "34",
+              "version": 1
+            },
+            {
+              "id": "35",
+              "version": 1
+            },
+            {
+              "id": "36",
+              "version": 1
+            },
+            {
+              "id": "37",
+              "version": 1
+            },
+            {
+              "id": "38",
+              "version": 1
+            },
+            {
+              "id": "39",
+              "version": 1
+            },
+            {
+              "id": "40",
+              "version": 1
+            },
+            {
+              "id": "41",
+              "version": 1
+            },
+            {
+              "id": "42",
+              "version": 1
+            },
+            {
+              "id": "43",
+              "version": 1
+            },
+            {
+              "id": "44",
+              "version": 1
+            },
+            {
+              "id": "45",
+              "version": 1
+            },
+            {
+              "id": "46",
+              "version": 1
+            },
+            {
+              "id": "47",
+              "version": 1
+            },
+            {
+              "id": "48",
+              "version": 1
+            },
+            {
+              "id": "49",
+              "version": 1
+            },
+            {
+              "id": "50",
+              "version": 1
+            },
+            {
+              "id": "51",
+              "version": 1
+            },
+            {
+              "id": "52",
+              "version": 1
+            },
+            {
+              "id": "53",
+              "version": 1
+            },
+            {
+              "id": "54",
+              "version": 1
+            },
+            {
+              "id": "55",
+              "version": 1
+            },
+            {
+              "id": "56",
+              "version": 1
+            },
+            {
+              "id": "57",
+              "version": 1
+            },
+            {
+              "id": "58",
+              "version": 1
+            },
+            {
+              "id": "59",
+              "version": 1
+            },
+            {
+              "id": "60",
+              "version": 1
+            },
+            {
+              "id": "61",
+              "version": 1
+            },
+            {
+              "id": "62",
+              "version": 1
+            },
+            {
+              "id": "63",
+              "version": 1
+            },
+            {
+              "id": "64",
+              "version": 1
+            },
+            {
+              "id": "65",
+              "version": 1
+            },
+            {
+              "id": "66",
+              "version": 1
+            },
+            {
+              "id": "67",
+              "version": 1
+            },
+            {
+              "id": "68",
+              "version": 1
+            },
+            {
+              "id": "69",
+              "version": 1
+            },
+            {
+              "id": "70",
+              "version": 1
+            },
+            {
+              "id": "71",
+              "version": 1
+            },
+            {
+              "id": "72",
+              "version": 1
+            },
+            {
+              "id": "73",
+              "version": 1
+            },
+            {
+              "id": "74",
+              "version": 1
+            },
+            {
+              "id": "75",
+              "version": 1
+            },
+            {
+              "id": "76",
+              "version": 1
+            },
+            {
+              "id": "77",
+              "version": 1
+            },
+            {
+              "id": "78",
+              "version": 1
+            },
+            {
+              "id": "79",
+              "version": 1
+            },
+            {
+              "id": "80",
+              "version": 1
+            },
+            {
+              "id": "81",
+              "version": 1
+            },
+            {
+              "id": "82",
+              "version": 1
+            },
+            {
+              "id": "83",
+              "version": 1
+            },
+            {
+              "id": "84",
+              "version": 1
+            },
+            {
+              "id": "85",
+              "version": 1
+            },
+            {
+              "id": "86",
+              "version": 1
+            },
+            {
+              "id": "87",
+              "version": 1
+            },
+            {
+              "id": "88",
+              "version": 1
+            },
+            {
+              "id": "89",
+              "version": 1
+            },
+            {
+              "id": "90",
+              "version": 1
+            },
+            {
+              "id": "91",
+              "version": 1
+            },
+            {
+              "id": "92",
+              "version": 1
+            },
+            {
+              "id": "93",
+              "version": 1
+            },
+            {
+              "id": "94",
+              "version": 1
+            },
+            {
+              "id": "95",
+              "version": 1
+            },
+            {
+              "id": "96",
+              "version": 1
+            },
+            {
+              "id": "97",
+              "version": 1
+            },
+            {
+              "id": "98",
+              "version": 1
+            },
+            {
+              "id": "99",
+              "version": 1
+            },
+            {
+              "id": "100",
+              "version": 1
+            }
+          ]
+        ],
+        "throws": {
+          "status": 400,
+          "code": "BULK_LIMIT"
+        }
+      },
+      {
+        "args": [
+          [
+            {
+              "id": "0",
+              "version": 1
+            },
+            {
+              "id": "1",
+              "version": 1
+            },
+            {
+              "id": "2",
+              "version": 1
+            },
+            {
+              "id": "3",
+              "version": 1
+            },
+            {
+              "id": "4",
+              "version": 1
+            },
+            {
+              "id": "5",
+              "version": 1
+            },
+            {
+              "id": "6",
+              "version": 1
+            },
+            {
+              "id": "7",
+              "version": 1
+            },
+            {
+              "id": "8",
+              "version": 1
+            },
+            {
+              "id": "9",
+              "version": 1
+            },
+            {
+              "id": "10",
+              "version": 1
+            },
+            {
+              "id": "11",
+              "version": 1
+            },
+            {
+              "id": "12",
+              "version": 1
+            },
+            {
+              "id": "13",
+              "version": 1
+            },
+            {
+              "id": "14",
+              "version": 1
+            },
+            {
+              "id": "15",
+              "version": 1
+            },
+            {
+              "id": "16",
+              "version": 1
+            },
+            {
+              "id": "17",
+              "version": 1
+            },
+            {
+              "id": "18",
+              "version": 1
+            },
+            {
+              "id": "19",
+              "version": 1
+            },
+            {
+              "id": "20",
+              "version": 1
+            },
+            {
+              "id": "21",
+              "version": 1
+            },
+            {
+              "id": "22",
+              "version": 1
+            },
+            {
+              "id": "23",
+              "version": 1
+            },
+            {
+              "id": "24",
+              "version": 1
+            },
+            {
+              "id": "25",
+              "version": 1
+            },
+            {
+              "id": "26",
+              "version": 1
+            },
+            {
+              "id": "27",
+              "version": 1
+            },
+            {
+              "id": "28",
+              "version": 1
+            },
+            {
+              "id": "29",
+              "version": 1
+            },
+            {
+              "id": "30",
+              "version": 1
+            },
+            {
+              "id": "31",
+              "version": 1
+            },
+            {
+              "id": "32",
+              "version": 1
+            },
+            {
+              "id": "33",
+              "version": 1
+            },
+            {
+              "id": "34",
+              "version": 1
+            },
+            {
+              "id": "35",
+              "version": 1
+            },
+            {
+              "id": "36",
+              "version": 1
+            },
+            {
+              "id": "37",
+              "version": 1
+            },
+            {
+              "id": "38",
+              "version": 1
+            },
+            {
+              "id": "39",
+              "version": 1
+            },
+            {
+              "id": "40",
+              "version": 1
+            },
+            {
+              "id": "41",
+              "version": 1
+            },
+            {
+              "id": "42",
+              "version": 1
+            },
+            {
+              "id": "43",
+              "version": 1
+            },
+            {
+              "id": "44",
+              "version": 1
+            },
+            {
+              "id": "45",
+              "version": 1
+            },
+            {
+              "id": "46",
+              "version": 1
+            },
+            {
+              "id": "47",
+              "version": 1
+            },
+            {
+              "id": "48",
+              "version": 1
+            },
+            {
+              "id": "49",
+              "version": 1
+            },
+            {
+              "id": "50",
+              "version": 1
+            },
+            {
+              "id": "51",
+              "version": 1
+            },
+            {
+              "id": "52",
+              "version": 1
+            },
+            {
+              "id": "53",
+              "version": 1
+            },
+            {
+              "id": "54",
+              "version": 1
+            },
+            {
+              "id": "55",
+              "version": 1
+            },
+            {
+              "id": "56",
+              "version": 1
+            },
+            {
+              "id": "57",
+              "version": 1
+            },
+            {
+              "id": "58",
+              "version": 1
+            },
+            {
+              "id": "59",
+              "version": 1
+            },
+            {
+              "id": "60",
+              "version": 1
+            },
+            {
+              "id": "61",
+              "version": 1
+            },
+            {
+              "id": "62",
+              "version": 1
+            },
+            {
+              "id": "63",
+              "version": 1
+            },
+            {
+              "id": "64",
+              "version": 1
+            },
+            {
+              "id": "65",
+              "version": 1
+            },
+            {
+              "id": "66",
+              "version": 1
+            },
+            {
+              "id": "67",
+              "version": 1
+            },
+            {
+              "id": "68",
+              "version": 1
+            },
+            {
+              "id": "69",
+              "version": 1
+            },
+            {
+              "id": "70",
+              "version": 1
+            },
+            {
+              "id": "71",
+              "version": 1
+            },
+            {
+              "id": "72",
+              "version": 1
+            },
+            {
+              "id": "73",
+              "version": 1
+            },
+            {
+              "id": "74",
+              "version": 1
+            },
+            {
+              "id": "75",
+              "version": 1
+            },
+            {
+              "id": "76",
+              "version": 1
+            },
+            {
+              "id": "77",
+              "version": 1
+            },
+            {
+              "id": "78",
+              "version": 1
+            },
+            {
+              "id": "79",
+              "version": 1
+            },
+            {
+              "id": "80",
+              "version": 1
+            },
+            {
+              "id": "81",
+              "version": 1
+            },
+            {
+              "id": "82",
+              "version": 1
+            },
+            {
+              "id": "83",
+              "version": 1
+            },
+            {
+              "id": "84",
+              "version": 1
+            },
+            {
+              "id": "85",
+              "version": 1
+            },
+            {
+              "id": "86",
+              "version": 1
+            },
+            {
+              "id": "87",
+              "version": 1
+            },
+            {
+              "id": "88",
+              "version": 1
+            },
+            {
+              "id": "89",
+              "version": 1
+            },
+            {
+              "id": "90",
+              "version": 1
+            },
+            {
+              "id": "91",
+              "version": 1
+            },
+            {
+              "id": "92",
+              "version": 1
+            },
+            {
+              "id": "93",
+              "version": 1
+            },
+            {
+              "id": "94",
+              "version": 1
+            },
+            {
+              "id": "95",
+              "version": 1
+            },
+            {
+              "id": "96",
+              "version": 1
+            },
+            {
+              "id": "97",
+              "version": 1
+            },
+            {
+              "id": "98",
+              "version": 1
+            },
+            {
+              "id": "99",
+              "version": 1
+            }
+          ],
+          [
+            {
+              "id": "0",
+              "version": 1
+            },
+            {
+              "id": "1",
+              "version": 1
+            },
+            {
+              "id": "2",
+              "version": 1
+            },
+            {
+              "id": "3",
+              "version": 1
+            },
+            {
+              "id": "4",
+              "version": 1
+            },
+            {
+              "id": "5",
+              "version": 1
+            },
+            {
+              "id": "6",
+              "version": 1
+            },
+            {
+              "id": "7",
+              "version": 1
+            },
+            {
+              "id": "8",
+              "version": 1
+            },
+            {
+              "id": "9",
+              "version": 1
+            },
+            {
+              "id": "10",
+              "version": 1
+            },
+            {
+              "id": "11",
+              "version": 1
+            },
+            {
+              "id": "12",
+              "version": 1
+            },
+            {
+              "id": "13",
+              "version": 1
+            },
+            {
+              "id": "14",
+              "version": 1
+            },
+            {
+              "id": "15",
+              "version": 1
+            },
+            {
+              "id": "16",
+              "version": 1
+            },
+            {
+              "id": "17",
+              "version": 1
+            },
+            {
+              "id": "18",
+              "version": 1
+            },
+            {
+              "id": "19",
+              "version": 1
+            },
+            {
+              "id": "20",
+              "version": 1
+            },
+            {
+              "id": "21",
+              "version": 1
+            },
+            {
+              "id": "22",
+              "version": 1
+            },
+            {
+              "id": "23",
+              "version": 1
+            },
+            {
+              "id": "24",
+              "version": 1
+            },
+            {
+              "id": "25",
+              "version": 1
+            },
+            {
+              "id": "26",
+              "version": 1
+            },
+            {
+              "id": "27",
+              "version": 1
+            },
+            {
+              "id": "28",
+              "version": 1
+            },
+            {
+              "id": "29",
+              "version": 1
+            },
+            {
+              "id": "30",
+              "version": 1
+            },
+            {
+              "id": "31",
+              "version": 1
+            },
+            {
+              "id": "32",
+              "version": 1
+            },
+            {
+              "id": "33",
+              "version": 1
+            },
+            {
+              "id": "34",
+              "version": 1
+            },
+            {
+              "id": "35",
+              "version": 1
+            },
+            {
+              "id": "36",
+              "version": 1
+            },
+            {
+              "id": "37",
+              "version": 1
+            },
+            {
+              "id": "38",
+              "version": 1
+            },
+            {
+              "id": "39",
+              "version": 1
+            },
+            {
+              "id": "40",
+              "version": 1
+            },
+            {
+              "id": "41",
+              "version": 1
+            },
+            {
+              "id": "42",
+              "version": 1
+            },
+            {
+              "id": "43",
+              "version": 1
+            },
+            {
+              "id": "44",
+              "version": 1
+            },
+            {
+              "id": "45",
+              "version": 1
+            },
+            {
+              "id": "46",
+              "version": 1
+            },
+            {
+              "id": "47",
+              "version": 1
+            },
+            {
+              "id": "48",
+              "version": 1
+            },
+            {
+              "id": "49",
+              "version": 1
+            },
+            {
+              "id": "50",
+              "version": 1
+            },
+            {
+              "id": "51",
+              "version": 1
+            },
+            {
+              "id": "52",
+              "version": 1
+            },
+            {
+              "id": "53",
+              "version": 1
+            },
+            {
+              "id": "54",
+              "version": 1
+            },
+            {
+              "id": "55",
+              "version": 1
+            },
+            {
+              "id": "56",
+              "version": 1
+            },
+            {
+              "id": "57",
+              "version": 1
+            },
+            {
+              "id": "58",
+              "version": 1
+            },
+            {
+              "id": "59",
+              "version": 1
+            },
+            {
+              "id": "60",
+              "version": 1
+            },
+            {
+              "id": "61",
+              "version": 1
+            },
+            {
+              "id": "62",
+              "version": 1
+            },
+            {
+              "id": "63",
+              "version": 1
+            },
+            {
+              "id": "64",
+              "version": 1
+            },
+            {
+              "id": "65",
+              "version": 1
+            },
+            {
+              "id": "66",
+              "version": 1
+            },
+            {
+              "id": "67",
+              "version": 1
+            },
+            {
+              "id": "68",
+              "version": 1
+            },
+            {
+              "id": "69",
+              "version": 1
+            },
+            {
+              "id": "70",
+              "version": 1
+            },
+            {
+              "id": "71",
+              "version": 1
+            },
+            {
+              "id": "72",
+              "version": 1
+            },
+            {
+              "id": "73",
+              "version": 1
+            },
+            {
+              "id": "74",
+              "version": 1
+            },
+            {
+              "id": "75",
+              "version": 1
+            },
+            {
+              "id": "76",
+              "version": 1
+            },
+            {
+              "id": "77",
+              "version": 1
+            },
+            {
+              "id": "78",
+              "version": 1
+            },
+            {
+              "id": "79",
+              "version": 1
+            },
+            {
+              "id": "80",
+              "version": 1
+            },
+            {
+              "id": "81",
+              "version": 1
+            },
+            {
+              "id": "82",
+              "version": 1
+            },
+            {
+              "id": "83",
+              "version": 1
+            },
+            {
+              "id": "84",
+              "version": 1
+            },
+            {
+              "id": "85",
+              "version": 1
+            },
+            {
+              "id": "86",
+              "version": 1
+            },
+            {
+              "id": "87",
+              "version": 1
+            },
+            {
+              "id": "88",
+              "version": 1
+            },
+            {
+              "id": "89",
+              "version": 1
+            },
+            {
+              "id": "90",
+              "version": 1
+            },
+            {
+              "id": "91",
+              "version": 1
+            },
+            {
+              "id": "92",
+              "version": 1
+            },
+            {
+              "id": "93",
+              "version": 1
+            },
+            {
+              "id": "94",
+              "version": 1
+            },
+            {
+              "id": "95",
+              "version": 1
+            },
+            {
+              "id": "96",
+              "version": 1
+            },
+            {
+              "id": "97",
+              "version": 1
+            },
+            {
+              "id": "98",
+              "version": 1
+            },
+            {
+              "id": "99",
+              "version": 1
+            }
+          ]
+        ],
+        "result": {
+          "validIds": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60",
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
+            "66",
+            "67",
+            "68",
+            "69",
+            "70",
+            "71",
+            "72",
+            "73",
+            "74",
+            "75",
+            "76",
+            "77",
+            "78",
+            "79",
+            "80",
+            "81",
+            "82",
+            "83",
+            "84",
+            "85",
+            "86",
+            "87",
+            "88",
+            "89",
+            "90",
+            "91",
+            "92",
+            "93",
+            "94",
+            "95",
+            "96",
+            "97",
+            "98",
+            "99"
+          ],
+          "conflicts": [],
+          "missing": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q13",
+    "name": "selectAfter",
+    "signature": "(items: Ticket[], cursor: { createdAt: string; id: string } | null, limit: number): { items: Ticket[]; nextCursor: { createdAt: string; id: string } | null }",
+    "rules": [
+      "输入记录的createdAt为同格式ISO UTC、id唯一；先按createdAt倒序，同时间按id字典倒序。",
+      "cursor=null从头；否则仅返回时间小于cursor，或时间相同且id字典小于cursor的记录。limit整数1—100，非法抛400 INVALID_LIMIT。",
+      "取limit项，若还有更多则nextCursor为本页最后一项位置，否则null；空页null。不改输入。",
+      "这是学习边界算法的纯函数，不是允许服务端将10000条读进内存再分页；实际API必须SQL LIMIT。"
+    ],
+    "cases": [
+      {
+        "args": [
+          [
+            {
+              "id": "a",
+              "title": "a",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z"
+            },
+            {
+              "id": "b",
+              "title": "b",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-02T00:00:00Z"
+            },
+            {
+              "id": "c",
+              "title": "c",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-02T00:00:00Z"
+            },
+            {
+              "id": "d",
+              "title": "d",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-03T00:00:00Z"
+            }
+          ],
+          null,
+          2
+        ],
+        "result": {
+          "items": [
+            {
+              "id": "d",
+              "title": "d",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-03T00:00:00Z"
+            },
+            {
+              "id": "c",
+              "title": "c",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-02T00:00:00Z"
+            }
+          ],
+          "nextCursor": {
+            "createdAt": "2026-01-02T00:00:00Z",
+            "id": "c"
+          }
+        }
+      },
+      {
+        "args": [
+          [
+            {
+              "id": "a",
+              "title": "a",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z"
+            },
+            {
+              "id": "b",
+              "title": "b",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-02T00:00:00Z"
+            },
+            {
+              "id": "c",
+              "title": "c",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-02T00:00:00Z"
+            },
+            {
+              "id": "d",
+              "title": "d",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-03T00:00:00Z"
+            }
+          ],
+          {
+            "createdAt": "2026-01-02T00:00:00Z",
+            "id": "c"
+          },
+          2
+        ],
+        "result": {
+          "items": [
+            {
+              "id": "b",
+              "title": "b",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-02T00:00:00Z"
+            },
+            {
+              "id": "a",
+              "title": "a",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z"
+            }
+          ],
+          "nextCursor": null
+        }
+      },
+      {
+        "args": [
+          [],
+          null,
+          10
+        ],
+        "result": {
+          "items": [],
+          "nextCursor": null
+        }
+      },
+      {
+        "args": [
+          [
+            {
+              "id": "a",
+              "title": "a",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z"
+            }
+          ],
+          null,
+          0
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_LIMIT"
+        }
+      },
+      {
+        "args": [
+          [
+            {
+              "id": "b",
+              "title": "A",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            },
+            {
+              "id": "a",
+              "title": "A",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ],
+          {
+            "createdAt": "2026-01-01T00:00:00Z",
+            "id": "b"
+          },
+          1
+        ],
+        "result": {
+          "items": [
+            {
+              "id": "a",
+              "title": "A",
+              "status": "open",
+              "version": 1,
+              "createdAt": "2026-01-01T00:00:00Z",
+              "ownerId": "user-01",
+              "assigneeId": "staff-01",
+              "archived": false
+            }
+          ],
+          "nextCursor": null
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q14",
+    "name": "changedFields",
+    "signature": "(original: Record<string, unknown>, draft: Record<string, unknown>, allowed: string[]): Record<string, unknown>",
+    "rules": [
+      "字段值限定string／number／boolean／null，不做深层对象比较。仅遍历allowed中在draft自身存在的键。",
+      "与original同键值严格相同则不输出，实际不同则输出draft值；不把0、false、空字符串过滤掉。不修改输入。",
+      "未知草稿键不输出；draft没有提供的字段视为不修改，不自动清成null。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "title": "a",
+            "count": 1
+          },
+          {
+            "title": "b",
+            "count": 0,
+            "admin": true
+          },
+          [
+            "title",
+            "count"
+          ]
+        ],
+        "result": {
+          "title": "b",
+          "count": 0
+        }
+      },
+      {
+        "args": [
+          {
+            "enabled": true,
+            "name": "a"
+          },
+          {
+            "enabled": false,
+            "name": ""
+          },
+          [
+            "enabled",
+            "name"
+          ]
+        ],
+        "result": {
+          "enabled": false,
+          "name": ""
+        }
+      },
+      {
+        "args": [
+          {
+            "title": "a"
+          },
+          {
+            "title": "a"
+          },
+          [
+            "title"
+          ]
+        ],
+        "result": {}
+      },
+      {
+        "args": [
+          {
+            "title": "a"
+          },
+          {},
+          [
+            "title"
+          ]
+        ],
+        "result": {}
+      },
+      {
+        "args": [
+          {
+            "x": 1
+          },
+          {
+            "x": null
+          },
+          [
+            "x"
+          ]
+        ],
+        "result": {
+          "x": null
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q15",
+    "name": "patchRisk",
+    "signature": "(paths: string[]): { level: string; areas: string[] }",
+    "rules": [
+      "路径已是仓库相对路径，先将反斜线转正斜线。migrations/或server/migrations/→schema；server/policy开头→auth；frontend/vue/components/开头→shared_ui；根package.json或package-lock.json→dependency；其余feature。",
+      "areas去重，固定顺序schema/auth/shared_ui/dependency/feature；空输入areas=[]。",
+      "含schema/auth/dependency任一→high，否则含shared_ui→medium，否则low。只作审查排序线索，不是完整安全扫描。"
+    ],
+    "cases": [
+      {
+        "args": [
+          [
+            "frontend/vue/App.vue"
+          ]
+        ],
+        "result": {
+          "level": "low",
+          "areas": [
+            "feature"
+          ]
+        }
+      },
+      {
+        "args": [
+          [
+            "frontend/vue/components/Field.vue",
+            "frontend/vue/App.vue"
+          ]
+        ],
+        "result": {
+          "level": "medium",
+          "areas": [
+            "shared_ui",
+            "feature"
+          ]
+        }
+      },
+      {
+        "args": [
+          [
+            "server/migrations/001.sql",
+            "server/policy.mjs",
+            "package.json"
+          ]
+        ],
+        "result": {
+          "level": "high",
+          "areas": [
+            "schema",
+            "auth",
+            "dependency"
+          ]
+        }
+      },
+      {
+        "args": [
+          []
+        ],
+        "result": {
+          "level": "low",
+          "areas": []
+        }
+      },
+      {
+        "args": [
+          [
+            "frontend\\vue\\components\\Button.vue"
+          ]
+        ],
+        "result": {
+          "level": "medium",
+          "areas": [
+            "shared_ui"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q16",
+    "name": "parsePriority",
+    "signature": "(value: unknown): string",
+    "rules": [
+      "undefined／空字符串／all返回all；low／normal／high原样返回。",
+      "其他包括null、大写、空格和数字，抛status400/code=INVALID_PRIORITY。不trim。",
+      "这是API严格解析，URL容错由前端另外实现。"
+    ],
+    "cases": [
+      {
+        "args": [],
+        "result": "all"
+      },
+      {
+        "args": [
+          ""
+        ],
+        "result": "all"
+      },
+      {
+        "args": [
+          "high"
+        ],
+        "result": "high"
+      },
+      {
+        "args": [
+          " HIGH "
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_PRIORITY"
+        }
+      },
+      {
+        "args": [
+          null
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_PRIORITY"
+        }
+      },
+      {
+        "args": [
+          "normal"
+        ],
+        "result": "normal"
+      },
+      {
+        "args": [
+          false
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_PRIORITY"
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q17",
+    "name": "threeWayMerge",
+    "signature": "(base: Record<string, unknown>, local: Record<string, unknown>, remote: Record<string, unknown>): { merged: Record<string, unknown>; conflicts: string[] }",
+    "rules": [
+      "三个输入有相同自身键集合，值为string／number／boolean／null；按键字典序处理。",
+      "local==remote取该值；local==base取remote；remote==base取local；其余为冲突，键加入conflicts且不放入merged。",
+      "返回新对象，不修改任何输入；不要以本地或远端优先掩盖真实冲突。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "title": "a",
+            "status": "open"
+          },
+          {
+            "title": "b",
+            "status": "open"
+          },
+          {
+            "title": "a",
+            "status": "resolved"
+          }
+        ],
+        "result": {
+          "merged": {
+            "status": "resolved",
+            "title": "b"
+          },
+          "conflicts": []
+        }
+      },
+      {
+        "args": [
+          {
+            "x": "a"
+          },
+          {
+            "x": "b"
+          },
+          {
+            "x": "c"
+          }
+        ],
+        "result": {
+          "merged": {},
+          "conflicts": [
+            "x"
+          ]
+        }
+      },
+      {
+        "args": [
+          {
+            "x": 0
+          },
+          {
+            "x": 1
+          },
+          {
+            "x": 1
+          }
+        ],
+        "result": {
+          "merged": {
+            "x": 1
+          },
+          "conflicts": []
+        }
+      },
+      {
+        "args": [
+          {
+            "x": true
+          },
+          {
+            "x": true
+          },
+          {
+            "x": false
+          }
+        ],
+        "result": {
+          "merged": {
+            "x": false
+          },
+          "conflicts": []
+        }
+      },
+      {
+        "args": [
+          {
+            "z": 0,
+            "a": 0
+          },
+          {
+            "z": 1,
+            "a": 1
+          },
+          {
+            "z": 2,
+            "a": 2
+          }
+        ],
+        "result": {
+          "merged": {},
+          "conflicts": [
+            "a",
+            "z"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q18",
+    "name": "summarizeSamples",
+    "signature": "(samples: number[]): { count: number; p50: number | null; p95: number | null; max: number | null }",
+    "rules": [
+      "samples为毫秒值，所有值须有限且非负，非法抛400 INVALID_SAMPLE。",
+      "升序后nearest-rank百分位：索引ceil(p*N)-1，p50使用0.5、p95使用0.95；max保留最慢值。",
+      "空集count=0其余null；不改输入，不删异常慢但合法的样本。"
+    ],
+    "cases": [
+      {
+        "args": [
+          [
+            5,
+            1,
+            100,
+            2,
+            3
+          ]
+        ],
+        "result": {
+          "count": 5,
+          "p50": 3,
+          "p95": 100,
+          "max": 100
+        }
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100
+          ]
+        ],
+        "result": {
+          "count": 100,
+          "p50": 50,
+          "p95": 95,
+          "max": 100
+        }
+      },
+      {
+        "args": [
+          []
+        ],
+        "result": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "max": null
+        }
+      },
+      {
+        "args": [
+          [
+            -1
+          ]
+        ],
+        "throws": {
+          "status": 400,
+          "code": "INVALID_SAMPLE"
+        }
+      },
+      {
+        "args": [
+          [
+            0
+          ]
+        ],
+        "result": {
+          "count": 1,
+          "p50": 0,
+          "p95": 0,
+          "max": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q19",
+    "name": "releaseReadiness",
+    "signature": "(evidence: Record<string, unknown>): { ready: boolean; blockers: string[] }",
+    "rules": [
+      "buildPassed、apiPassed、uiPassed、migrationReviewed、rollbackDocumented必须严格true，缺省或其他值均不通过。unresolvedCritical必须严格数字0。",
+      "blockers固定顺序BUILD／API／UI／CRITICAL／MIGRATION／ROLLBACK；依次对应各条件。",
+      "ready当且仅当blockers为空；不能从文字“应该没问题”推断通过。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "buildPassed": true,
+            "apiPassed": true,
+            "uiPassed": true,
+            "unresolvedCritical": 0,
+            "migrationReviewed": true,
+            "rollbackDocumented": true
+          }
+        ],
+        "result": {
+          "ready": true,
+          "blockers": []
+        }
+      },
+      {
+        "args": [
+          {}
+        ],
+        "result": {
+          "ready": false,
+          "blockers": [
+            "BUILD",
+            "API",
+            "UI",
+            "CRITICAL",
+            "MIGRATION",
+            "ROLLBACK"
+          ]
+        }
+      },
+      {
+        "args": [
+          {
+            "buildPassed": true,
+            "apiPassed": true,
+            "uiPassed": false,
+            "unresolvedCritical": 1,
+            "migrationReviewed": true,
+            "rollbackDocumented": true
+          }
+        ],
+        "result": {
+          "ready": false,
+          "blockers": [
+            "UI",
+            "CRITICAL"
+          ]
+        }
+      },
+      {
+        "args": [
+          {
+            "buildPassed": "true",
+            "apiPassed": true,
+            "uiPassed": true,
+            "unresolvedCritical": "0",
+            "migrationReviewed": true,
+            "rollbackDocumented": true
+          }
+        ],
+        "result": {
+          "ready": false,
+          "blockers": [
+            "BUILD",
+            "CRITICAL"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "Q20",
+    "name": "contractDiff",
+    "signature": "(expected: Record<string, \"string\" | \"number\" | \"boolean\">, payload: Record<string, unknown>): { missing: string[]; unexpected: string[]; typeMismatch: string[] }",
+    "rules": [
+      "只比较自身顶层字段，expected值限定string／number／boolean。缺少expected自身键归missing，多出的payload自身键归unexpected。",
+      "已有字段类型不同归typeMismatch，number还必须是有限值；null不是任何一种合法值。",
+      "三个数组均按字典序，不修改输入，不把原型上的toString等当作已提供字段。"
+    ],
+    "cases": [
+      {
+        "args": [
+          {
+            "id": "string",
+            "version": "number"
+          },
+          {
+            "id": "a",
+            "version": 1
+          }
+        ],
+        "result": {
+          "missing": [],
+          "unexpected": [],
+          "typeMismatch": []
+        }
+      },
+      {
+        "args": [
+          {
+            "id": "string",
+            "version": "number"
+          },
+          {
+            "id": 2,
+            "admin": true
+          }
+        ],
+        "result": {
+          "missing": [
+            "version"
+          ],
+          "unexpected": [
+            "admin"
+          ],
+          "typeMismatch": [
+            "id"
+          ]
+        }
+      },
+      {
+        "args": [
+          {
+            "id": "string"
+          },
+          {
+            "id": null
+          }
+        ],
+        "result": {
+          "missing": [],
+          "unexpected": [],
+          "typeMismatch": [
+            "id"
+          ]
+        }
+      },
+      {
+        "args": [
+          {
+            "toString": "string"
+          },
+          {}
+        ],
+        "result": {
+          "missing": [
+            "toString"
+          ],
+          "unexpected": [],
+          "typeMismatch": []
+        }
+      },
+      {
+        "args": [
+          {
+            "valid": "boolean",
+            "version": "number"
+          },
+          {
+            "valid": 0,
+            "version": "1"
+          }
+        ],
+        "result": {
+          "missing": [],
+          "unexpected": [],
+          "typeMismatch": [
+            "valid",
+            "version"
+          ]
+        }
+      }
+    ]
+  }
+]

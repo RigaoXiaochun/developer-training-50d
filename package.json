@@ -1,0 +1,36 @@
+{
+  "name": "engineering-vibe-training-20",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.14 <25"
+  },
+  "scripts": {
+    "dev": "node tools/start.mjs",
+    "preview": "node tools/start.mjs --preview",
+    "api": "node server/main.mjs",
+    "build": "vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "node --test tests/infrastructure/*.test.mjs",
+    "check:base": "node tools/base-check.mjs",
+    "check:task": "node tools/check-task.mjs",
+    "test:core": "node tools/test-core.mjs",
+    "check:ui": "node tools/run-ui.mjs",
+    "training:issues": "node tools/github-issues.mjs",
+    "data:reset": "node tools/reset-data.mjs",
+    "test:learner": "node tools/test-learner.mjs",
+    "test:acceptance": "node tools/test-acceptance.mjs",
+    "perf": "node tools/measure.mjs"
+  },
+  "dependencies": {
+    "vue": "3.5.45"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@vitejs/plugin-vue": "6.0.11",
+    "typescript": "5.9.3",
+    "vite": "8.3.8",
+    "vue-tsc": "3.3.14"
+  }
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>工单工作台 · 设计参考</title><link rel="stylesheet" href="reference.css"></head>
+<body>
+<aside class="sidebar"><a class="brand" href="?view=list"><span class="brand-mark">S</span>Support Desk</a><nav aria-label="主导航"><a href="?view=list">工单列表</a><a href="?view=form">新建工单</a><a href="?view=detail">工单详情</a><a href="?view=components">控件与状态</a></nav><p class="side-note">课程参考界面<br>虚构教学数据</p></aside>
+<div class="workspace"><header class="topbar"><span>工作台</span><span class="role">教学角色：用户</span></header>
+<main>
+<section data-view="list">
+<div class="page-heading"><div><p class="eyebrow">WORKSPACE</p><h1>工单列表</h1><p class="muted">查看和跟进你的问题</p></div><a class="button primary" href="?view=form">＋ 新建工单</a></div>
+<div class="panel"><form class="filters" id="search-form"><label class="search"><span aria-hidden="true">⌕</span><input id="q" aria-label="搜索工单" placeholder="搜索标题或工单编号" type="search"></label><label class="filter-label">状态<select id="status"><option value="all">全部状态</option><option value="open">待处理</option><option value="in_progress">处理中</option><option value="resolved">已解决</option></select></label></form>
+<div class="table-heading"><span>工单</span><span>状态</span><span>负责人</span><span>更新时间</span></div>
+<div id="rows"></div><p id="empty" class="empty" hidden>没有符合条件的工单</p>
+<footer class="list-footer"><span id="count">共3条</span><div class="pagination"><button disabled aria-label="上一页">←</button><span>第1页</span><button disabled aria-label="下一页">→</button></div></footer></div>
+</section>
+<section data-view="form" hidden><div class="page-heading"><div><a class="back" href="?view=list">← 返回列表</a><h1>新建工单</h1></div></div><form class="panel editor" id="ticket-form"><div class="field"><label for="title">标题 <span class="required">*</span></label><input id="title" placeholder="简要描述遇到的问题" required><div class="help">最多60个字符</div></div><div class="field"><label for="category">分类 <span class="required">*</span></label><select id="category"><option>技术支持</option><option>账务</option><option>其他</option></select></div><div class="field"><label for="description">问题描述 <span class="required">*</span></label><textarea id="description" rows="6" placeholder="说明操作步骤、预期结果和实际情况" required></textarea><div class="help">最多1000个字符，不填写真实个人信息</div></div><p id="form-result" role="status"></p><div class="actions"><a class="button" href="?view=list">取消</a><button class="primary">提交工单</button></div></form></section>
+<section data-view="detail" hidden><div class="page-heading"><div><a class="back" href="?view=list">← 返回列表</a><h1>工单详情</h1></div></div><article class="panel editor"><div class="detail-meta"><span>TCK-0001</span><span class="badge open">待处理</span></div><h2>登录页面无法显示</h2><p class="description">打开页面后一直停留在加载状态。刷新浏览器后仍未恢复，希望确认处理方式。</p><dl><div><dt>分类</dt><dd>技术支持</dd></div><div><dt>创建人</dt><dd>林晓</dd></div><div><dt>负责人</dt><dd>未分配</dd></div><div><dt>更新时间</dt><dd>2026-01-01 09:00</dd></div></dl><div class="actions"><button id="archive" class="danger">归档样例</button><a class="button primary" href="?view=form">编辑样例</a></div></article></section>
+<section data-view="components" hidden><div class="page-heading"><div><h1>控件与状态</h1><p class="muted">同一套尺寸、颜色与反馈</p></div></div><div class="panel editor"><h2>操作</h2><div class="sample-row"><button class="primary">主要操作</button><button>次要操作</button><button disabled>不可操作</button></div><h2>状态</h2><div class="sample-row"><span class="badge open">待处理</span><span class="badge working">处理中</span><span class="badge resolved">已解决</span></div><div class="field"><label for="invalid">标题</label><input id="invalid" aria-invalid="true" aria-describedby="invalid-help" value=""><p class="error" id="invalid-help">请输入1至60个字符</p></div><div class="state-box" role="status">正在读取工单…</div><div class="state-box">暂无工单。创建后可在这里查看。</div><div class="state-box error">读取失败，请检查连接后重试。<button type="button">重试</button></div></div></section>
+<p class="reference-note">设计参考 · 此页操作不连接教学API，不是作业完成证据</p>
+</main></div>
+<nav class="mobile-nav" aria-label="手机导航"><a href="?view=list">工单列表</a><a href="?view=form">新建工单</a><a href="?view=components">控件</a></nav>
+<dialog id="confirm"><form method="dialog"><h2>归档这条工单？</h2><p>这是交互参考，不会修改教学数据。</p><div class="actions"><button value="cancel">取消</button><button value="confirm" class="primary">归档</button></div></form></dialog>
+<script src="reference.js"></script>
+</body></html>

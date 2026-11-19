@@ -1,0 +1,98 @@
+.editor {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px
+}
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 24px
+}
+.field label {
+  font-weight: 600;
+  font-size: 14px
+}
+.help,.error {
+  font-size: 13px;
+  margin: 0
+}
+.required,.error {
+  color: var(--danger)
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px
+}
+.detail-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 20px
+}
+.description {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-bottom: 24px
+}
+dl {
+  margin: 0
+}
+dl>div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0
+}
+dt {
+  font-size: 14px
+}
+dd {
+  margin: 0;
+  text-align: right
+}
+.sample-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px
+}
+.state-box {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 16px
+}
+.state-box button {
+  margin-left: 12px
+}
+.empty {
+  padding: 48px 20px;
+  text-align: center
+}
+.reference-note {
+  text-align: center;
+  font-size: 12px;
+  margin: 24px 0
+}
+.mobile-nav {
+  display: none
+}
+dialog {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: calc(100% - 32px);
+  width: 420px;
+  color: var(--text)
+}
+dialog: :backdrop {
+  background: #17212b66
+}
+dialog p {
+  color: var(--muted)
+}

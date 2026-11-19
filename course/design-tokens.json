@@ -1,0 +1,6 @@
+{
+  "--color-primary": "#0f766e", "--color-text": "#17212b", "--color-muted": "#526170",
+  "--color-surface": "#ffffff", "--color-background": "#f5f7fa", "--color-border": "#d7dee7", "--color-danger": "#b42318",
+  "--font-body": "16px", "--font-title": "24px", "--space-1": "4px", "--space-2": "8px", "--space-3": "12px", "--space-4": "16px", "--space-6": "24px", "--space-8": "32px",
+  "--radius-control": "8px", "--radius-card": "12px", "--control-height": "44px"
+}

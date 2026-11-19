@@ -1,0 +1,21 @@
+name: 缺陷与复现
+description: 记录可定位的问题
+body:
+  - type: textarea
+    id: version
+    attributes:
+      label: 课号、候选SHA、环境与视口
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤、预期与实际
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 请求、日志、截图与已尝试排查
+    validations:
+      required: true

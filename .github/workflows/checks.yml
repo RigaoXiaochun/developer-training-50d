@@ -1,0 +1,53 @@
+name: Engineering training
+on:
+  push:
+    branches: [main, 'feat/**', 'fix/**', 'refactor/**']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Q01—Q20，留空仅基础烟测'
+        required: false
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.14.0'
+          cache: npm
+      - run: npm ci
+      - run: npm run check:base && npm test && npm run typecheck && npm run build
+      - id: lesson
+        name: Resolve task
+        env:
+          REQUESTED: ${{ inputs.task }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          node --input-type=module -e 'import fs from "node:fs";const q=process.env.REQUESTED||process.env.BRANCH.match(/^(?:feat|fix|refactor)\/(q\d{2})-/)?.[1]?.toUpperCase()||"smoke";if(q!=="smoke"&&!/^Q(0[1-9]|1\d|20)$/.test(q))throw Error("Invalid task");fs.appendFileSync(process.env.GITHUB_OUTPUT,"task="+q+"\n");'
+      - name: Core and evidence
+        if: steps.lesson.outputs.task != 'smoke'
+        env:
+          QID: ${{ steps.lesson.outputs.task }}
+        run: |
+          npm run check:task -- "$QID"
+          npm run test:learner
+          npm run test:acceptance -- "$QID"
+      - run: npx playwright install --with-deps chromium
+      - name: Browser
+        env:
+          QID: ${{ steps.lesson.outputs.task }}
+        run: npm run check:ui -- "$QID"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: engineering-results
+          path: |
+            playwright-report
+            test-results
+            .local/checks
+          if-no-files-found: ignore
