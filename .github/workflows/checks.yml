@@ -56,6 +56,20 @@ jobs:
         env:
           QID: ${{ steps.lesson.outputs.task }}
         run: npm run check:ui -- "$QID"
+      - name: Capstone build and tests
+        if: steps.lesson.outputs.task == 'Q20'
+        run: |
+          for file in package.json package-lock.json README.md; do
+            if [ ! -f "capstone/$file" ]; then
+              echo "::error::请提交 capstone/$file"
+              exit 1
+            fi
+          done
+          cd capstone
+          npm ci
+          npm run typecheck
+          npm test
+          npm run build
       - uses: actions/upload-artifact@v4
         if: always()
         with:
