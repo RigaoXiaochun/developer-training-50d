@@ -1,4 +1,4 @@
-import { normalizeDraft} from '../../exercises/Q01';
+import { normalizeDraft} from '../../exercises/Q01.ts';
 import assert from 'node:assert';
 
 // 例1：空标签
@@ -21,11 +21,11 @@ const case2 = {
 const res2 = normalizeDraft(case2);
 assert.deepEqual(res2.errors,[{field:'title',code:'INVALID'}]);
 
-// 例子3 category带空格
+// 例子3 非法分类
 const case3 =  {
     title:"正常标题",
     description:"ook",
-    category:"support   "
+    category:"gasad"
 };
 const res3 = normalizeDraft(case3);
 assert.deepEqual(res3.errors,[{field:"category",code:"INVALID"}]);
