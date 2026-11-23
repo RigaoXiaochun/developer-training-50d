@@ -1,4 +1,4 @@
-import { normalizeDraft} from '../exercises/Q01';
+import { normalizeDraft} from '../../exercises/Q01';
 import assert from 'node:assert';
 
 // 例1：空标签
