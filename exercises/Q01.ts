@@ -13,17 +13,22 @@ export function normalizeDraft(draft: Record<string, unknown>): {
   // 清洗数据
   let title = typeof rawTitle === 'string' ? rawTitle.trim() : '';
   let description = typeof rawDescription === 'string' ? rawDescription.trim() : '';
-  let category = typeof rawCategory === 'string' ? rawCategory.trim() : '';
+  //  " support " 这种前后带空格的值应当拒绝
+  // let category = typeof rawCategory === 'string' ? rawCategory.trim() : '';
+  let category = typeof rawCategory === 'string' ? rawCategory : '';
   // 校验
   const errors: { field: string; code: string}[] = [];
   const allowCategory = ['support','billing','other'];
 
-  if (!(title.length >= 1 && title.length <= 60)){
+  const titleCodePointCount = [...title].length
+  if (!(titleCodePointCount >= 1 && titleCodePointCount <= 60)){
     errors.push({field:'title',code:'INVALID'});
   }
-  if (!(description.length >= 1 && description.length <= 1000)) {
+  const descCodePointCount = [...description].length
+  if (!(descCodePointCount >= 1 && descCodePointCount <= 1000)) {
     errors.push({field:'description',code:'INVALID'})
   }
+
   if (!allowCategory.includes(category)) {
     errors.push({ field: 'category', code:'INVALID'});
   }
