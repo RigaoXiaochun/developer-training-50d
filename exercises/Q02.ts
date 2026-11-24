@@ -9,7 +9,24 @@ export function parseBranch(
   // 拿到输入数据 name
   const str = name.trim();
   // 分割函数 split(分隔符) 把一个字符串切成数组
-  const parst = str.split('/')
-  console.log(parst)
+  const parts = str.split('/')
+  if(parts.length !== 3) {
+    return null;
+  }
+// parts的值 0 1 2 赋给
+  const [kind,task,slug] = parts;
 
+  //feat / fix / refactor
+  const allowKind = ['feat','fix','refactor'];
+  // includes()调用 kind 只能为feat fix refactor
+  if(!allowKind.includes(kind)) {
+    return null;
+  }
+  // kind不能为空
+  if(kind === ''||task === ''||slug === '') {
+    return null;
+  }
+  return {kind,task,slug}
+}
 
+//重新提交
