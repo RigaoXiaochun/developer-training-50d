@@ -1,31 +1,28 @@
-import type { Actor, Ticket } from './types.ts';
+import { parseBranch } from '../../exercises/Q02.ts';
 
-// 独立编码区：禁止Agent生成、补全或修改。规则见本题任务书。
-export function parseBranch(
-  name: string,
-): { kind: string; task: string; slug: string } | null {
-  // throw new Error('Q02 尚未实现');
+// import assert from 'node:assert' 导入Node.js 自带的断言工具，用来做判断 预期结果是不是和实际结果一样
+import assert from 'node:assert';
 
-  // 拿到输入数据 name
-  const str = name.trim();
-  // 分割函数 split(分隔符) 把一个字符串切成数组
-  const parts = str.split('/')
-  if(parts.length !== 3) {
-    return null;
-  }
-// parts的值 0 1 2 赋给
-  const [kind,task,slug] = parts;
+// 用例1：正常情况
+const res1 = parseBranch('feat/Q02/github-delivery');
+// assert.deepEqual() 专门对比对象
+assert.deepEqual(res1, {
+  kind: 'feat',
+  task: 'Q02',
+  slug: 'github-delivery'
+});
 
-  //feat / fix / refactor
-  const allowKind = ['feat','fix','refactor'];
-  // includes()调用 kind 只能为feat fix refactor
-  if(!allowKind.includes(kind)) {
-    return null;
-  }
-  // kind不能为空
-  if(kind === ''||task === ''||slug === '') {
-    return null;
-  }
-  return {kind,task,slug}
-}
-  //重新提交0.2
+// 用例2：kind非法，返回null
+const res2 = parseBranch('6666/Q02/github-delivery');
+// assert.equal(a,null)  a为null返回null分则报错
+assert.equal(res2, null);
+
+// 用例3：分割不是3段
+const res3 = parseBranch('feat/q02-github-delivery');
+assert.equal(res3, null);
+
+// 用例4：空片段
+const res4 = parseBranch('feat//test');
+assert.equal(res4, null);
+
+console.log('全部通过');

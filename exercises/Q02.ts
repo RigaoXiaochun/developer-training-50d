@@ -1,4 +1,3 @@
-import type { Actor, Ticket } from './types.ts';
 
 // 独立编码区：禁止Agent生成、补全或修改。规则见本题任务书。
 export function parseBranch(
@@ -26,7 +25,8 @@ export function parseBranch(
   if(kind === ''||task === ''||slug === '') {
     return null;
   }
-  return {kind,task,slug}
+  //task:task.toUpperCase() 转大写
+  return {kind,task:task.toUpperCase(),slug}
 }
 
 //重新提交0.2
